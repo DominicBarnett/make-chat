@@ -1,10 +1,10 @@
 //index.js
 $(document).ready(()=>{
+    //index.js
     const socket = io.connect();
-  
-    //Keep track of the current user
     let currentUser;
-  
+    // Get the online users from the server
+    socket.emit('get online users');
     $('#create-user-btn').click((e)=>{
       e.preventDefault();
       if($('#username-input').val().length > 0){
@@ -46,5 +46,18 @@ $(document).ready(()=>{
         </div>
         `);
     })
+
+    socket.on('get online users', () => {
+        //Send over the onlineUsers
+        socket.emit('get online users', onlineUsers);
+      })
+
+    //Refresh the online user list
+    socket.on('user has left', (onlineUsers) => {
+        $('.users-online').empty();
+        for(username in onlineUsers){
+        $('.users-online').append(`<p>${username}</p>`);
+        }
+    });
     
   })
